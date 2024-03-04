@@ -54,21 +54,14 @@ fun CustomMap(latidue :String?, longitude:String?) {
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center) {
-        Button(onClick = {
-            val location = Uri.parse("geo:0,0?q=$latidue,$longitude(label)")
-            val mapIntent = Intent(Intent.ACTION_VIEW, location)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            openMapLauncher.launch(mapIntent)
-        }) {
-            Text(text = "Open Map")
-        }
+        MapView(latitude = latidue?.toDouble(), longitude = longitude?.toDouble())
     }
 
 }
 
 
 @Composable
-fun MapView(latitude: Double, longitude: Double) {
+fun MapView(latitude: Double?, longitude: Double?) {
     val mapView = rememberMapViewWithLifecycle()
 
     AndroidView(
@@ -76,7 +69,7 @@ fun MapView(latitude: Double, longitude: Double) {
         update = { mapView ->
             // Initialize the map
             mapView.getMapAsync { googleMap ->
-                val latLng = LatLng(latitude, longitude)
+                val latLng = LatLng(latitude?:0.0, longitude?:0.0)
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
                 val markerOptions = MarkerOptions().position(latLng)
                 googleMap.addMarker(markerOptions)
